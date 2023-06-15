@@ -3,15 +3,14 @@
 namespace App\Http\Controllers;
 use DB;
 use PDF;
-use Notification;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Catagory;
-
 use Illuminate\Http\Request;
 use App\Http\Controllers\Requst;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Notifications\Notification;
 use App\Notifications\SendEmailNotification;
 
 class AdminController extends Controller
