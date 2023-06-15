@@ -32,12 +32,12 @@
 <body>
     <div class="hero_area">
         @include('home.header')
-        
-    
+
+
         @include('sweetalert::alert')
 
-    @include('home.product_view')
-</div>
+        @include('home.product_view')
+    </div>
     {{-- comment and replay system starts here --}}
     <div style="text-align:center">
         <h1 style="text-align:center;font-size:30px;padding-bottom:10px; ">Comment</h1>
@@ -48,29 +48,50 @@
             <button class="btn btn-primary" type="submit">Comment</button>
         </form>
     </div>
-    <div style="padding-left:20% ;padding-top:20px">
-        <h1 style="font-size: 20px;">All Comments</h1>
-        @foreach ($comment as $comment)
+    <div style="padding-left: 20%; padding-top: 10px">
+    <h1 style="font-size: 20px;">All Comments</h1>
+
+    @if ($comments->count() > 0)
+        @foreach ($comments as $comment)
             <div>
                 <b>{{ $comment->name }}</b>
                 <p>{{ $comment->comment }}</p>
-               
+                <a href="javascript:void(0)" onclick="toggleReplyBox(this)">Reply</a>
 
-                <a href="javascript:void(0)" onclick="reply(this)">Reply</a>
+                <div style="display: none" class="replyDiv">
+                    <form action="{{ route('replay.store') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="comment_id" value="{{ $comment->id }}">
+                        <textarea style="height: 100px;width:300px" name="reply" placeholder="Reply here"></textarea><br>
+                        @if (auth()->check())
+                            <input type="hidden" name="name" placeholder="Your Name" value="{{ auth()->user()->name }}" readonly><br>
+                        @else
+                            
+                        @endif
+                        <button class="btn btn-primary" type="submit">Reply</button>
+                        <a href="javascript:void(0)" class="btn" onclick="toggleReplyBox(this)">Close</a>
+                    </form>
+                </div>
 
+                @if ($comment->replies->count() > 0)
+                    <div style="padding-left: 20px">
+                        @foreach ($comment->replies as $reply)
+                            <div>
+                                <b>{{ $reply->name }}</b>
+                                <p>{{ $reply->reply }}</p>
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
             </div>
         @endforeach
+        {{-- {{ $comments->links() }} --}}
 
-        <div style="display: none" class="replyDiv">
-            <input type="text" name="commentId" value="" hidden >
-            <textarea style="height: 100px;width:300px" placeholder="Reply here"></textarea><br>
-            <button class="btn btn-primary">Reply</button>
-            <a href="javascript:void(0)" class="btn " onclick="replay_close(this)" 
-            data-Commentid="{{ $comment->id}}">Close</a>
+    @else
+        <p>No comments available.</p>
+    @endif
+</div>
 
-        </div>
-
-    </div>
 
 
 
@@ -78,7 +99,7 @@
 
 
 
-    
+
     @include('home.footer')
 
     <div class="cpy_">
@@ -103,8 +124,8 @@
             $('.replyDiv').hide();
         }
     </script>
-     <script>
-        document.addEventListener("DOMContentLoaded", function(event) { 
+    <script>
+        document.addEventListener("DOMContentLoaded", function(event) {
             var scrollpos = localStorage.getItem('scrollpos');
             if (scrollpos) window.scrollTo(0, scrollpos);
         });

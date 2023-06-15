@@ -51,7 +51,7 @@
                                 <!-- Display cart items count or other details -->
                                 <span class="cart-count">{{ $cartItems->count() }}</span>
                             @else
-                                 <span class="cart-count">{{ $cartItems = 0 }}</span>
+                                 {{-- <span class="cart-count">{{ $cartItems = 0 }}</span> --}}
                             @endif
                             
 
